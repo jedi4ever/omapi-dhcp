@@ -3,6 +3,7 @@ package org.talamonso.OMAPI.Objects;
 import org.talamonso.OMAPI.Connection;
 import org.talamonso.OMAPI.Message;
 import org.talamonso.OMAPI.Exceptions.OmapiConnectionException;
+import org.talamonso.OMAPI.Exceptions.OmapiException;
 import org.talamonso.OMAPI.Exceptions.OmapiInitException;
 import org.talamonso.OMAPI.Exceptions.OmapiObjectException;
 
@@ -35,7 +36,7 @@ public class Authenticator extends Message {
 	 * @param bs ByteArray of the incomming data
 	 * @throws OmapiObjectException
 	 */
-	protected Authenticator(Connection con, byte[] bs) throws OmapiObjectException {
+	protected Authenticator(Connection con, byte[] bs) throws OmapiException {
 		super(con, bs);
 	}
 
@@ -48,7 +49,7 @@ public class Authenticator extends Message {
 	 * @throws OmapiObjectException
 	 * @throws OmapiInitException
 	 */
-	public Authenticator send(int option) throws OmapiObjectException, OmapiConnectionException, OmapiInitException {
+	public Authenticator send(int option) throws OmapiException {
 		return new Authenticator(this.c, this.sendMessage(option));
 	}
 }

@@ -2,6 +2,7 @@ package org.talamonso.OMAPI;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Random;
 
 import org.talamonso.OMAPI.Exceptions.OmapiCallException;
 import org.talamonso.OMAPI.Exceptions.OmapiConnectionException;
+import org.talamonso.OMAPI.Exceptions.OmapiException;
 import org.talamonso.OMAPI.Exceptions.OmapiInitException;
 import org.talamonso.OMAPI.Exceptions.OmapiObjectException;
 import org.xbill.DNS.utils.HMAC;
@@ -139,11 +141,11 @@ public abstract class Message {
 	 * @param m Valid ByteArray from InputStream
 	 * @throws OmapiObjectException if the construction fails
 	 */
-	protected Message(Connection con, byte[] m) throws OmapiObjectException {
+	protected Message(Connection con, byte[] m) throws OmapiException {
 		con.log("Effort to assign incoming data to Message Object", 2);
 		this.c = con;
 		if (m.length < 24 + 4 + 16) {
-			throw new OmapiObjectException("Sorry. Incomming Message to small.");
+			throw new OmapiObjectException("Sorry. Incoming Message too small.");
 		}
 		ByteBuffer bb = ByteBuffer.allocate(m.length);
 		bb.put(m);
@@ -166,7 +168,7 @@ public abstract class Message {
 		if (Convert.byteArrayToInt(this.opcode) == 5) {
 			if (!this.getErrorCode().equals("success")) {
 				throw new OmapiCallException(this.getErrorMsg(),
-						this.getErrorCode());
+					this.getErrorCode());
 			}
 		}
 	}
@@ -178,7 +180,7 @@ public abstract class Message {
 	 * @throws OmapiInitException if the initialisation fails
 	 * @throws OmapiObjectException if the Object has an error
 	 */
-	public void delete() throws OmapiInitException, OmapiConnectionException, OmapiObjectException {
+	public void delete() throws OmapiException {
 		this.opcode = Convert.intTo4ByteArray(Message.DELETE);
 		this.tid = this.newTid();
 		this.rid = Convert.intTo4ByteArray(0);
@@ -195,7 +197,7 @@ public abstract class Message {
 	 * @throws OmapiInitException
 	 * @throws OmapiConnectionException
 	 */
-	public Message getMessageViaHandle(int h) throws OmapiObjectException, OmapiInitException, OmapiConnectionException {
+	public Message getMessageViaHandle(int h) throws OmapiException {
 		Message x = new EmptyMessage(this.c);
 		x.handle = Convert.intTo4ByteArray(h);
 		x = new EmptyMessage(this.c, x.sendMessage(Message.REFRESH));
@@ -639,7 +641,7 @@ public abstract class Message {
 	 * @throws OmapiInitException if the initialisation fails
 	 * @throws OmapiObjectException if the Object has an error
 	 */
-	protected byte[] sendMessage(int action) throws OmapiInitException, OmapiConnectionException, OmapiObjectException {
+	protected byte[] sendMessage(int action) throws OmapiException {
 		this.opcode = Convert.intTo4ByteArray(action);
 		this.tid = this.newTid();
 		this.rid = Convert.intTo4ByteArray(0);
