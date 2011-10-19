@@ -7,10 +7,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 
+import org.talamonso.OMAPI.Exceptions.OmapiCallException;
 import org.talamonso.OMAPI.Exceptions.OmapiConnectionException;
 import org.talamonso.OMAPI.Exceptions.OmapiInitException;
 import org.talamonso.OMAPI.Exceptions.OmapiObjectException;
-import org.xbill.DNS.utils.*;
+import org.xbill.DNS.utils.HMAC;
+
 import com.widget.util.Hex;
 
 /**
@@ -163,7 +165,8 @@ public abstract class Message {
 		}
 		if (Convert.byteArrayToInt(this.opcode) == 5) {
 			if (!this.getErrorCode().equals("success")) {
-				throw new OmapiObjectException("The server sais:   " + this.getErrorMsg() + "\nThe code send additionally means:   " + this.getErrorCode());
+				throw new OmapiCallException(this.getErrorMsg(),
+						this.getErrorCode());
 			}
 		}
 	}
@@ -181,87 +184,6 @@ public abstract class Message {
 		this.rid = Convert.intTo4ByteArray(0);
 		// We first need to have a handle!
 		new EmptyMessage(this.c, this.sendMessage(Message.OPEN)).sendMessage(Message.DEL);
-	}
-
-	/**
-	 * Decodes the error code of the server. decodes the code as in omapip/result.c in the dhcp server sources
-	 * 
-	 * @param code
-	 * @return The decoded Message
-	 */
-	public String getErrorByCode(int code) {
-		String[] errors = new String[70];
-		errors[0] = "success";
-		errors[1] = "out of memory";
-		errors[2] = "timed out";
-		errors[3] = "no available threads";
-		errors[4] = "address not available";
-		errors[5] = "address in use";
-		errors[6] = "permission denied";
-		errors[7] = "no pending connections";
-		errors[8] = "network unreachable";
-		errors[9] = "host unreachable";
-		errors[10] = "network down";
-		errors[11] = "host down";
-		errors[12] = "connection refused";
-		errors[13] = "not enough free resources";
-		errors[14] = "end of file";
-		errors[15] = "socket already bound";
-		errors[16] = "task is done";
-		errors[17] = "lock busy";
-		errors[18] = "already exists";
-		errors[19] = "ran out of space";
-		errors[20] = "operation canceled";
-		errors[21] = "sending events is not allowed";
-		errors[22] = "shutting down";
-		errors[23] = "not found";
-		errors[24] = "unexpected end of input";
-		errors[25] = "failure";
-		errors[26] = "I/O error";
-		errors[27] = "not implemented";
-		errors[28] = "unbalanced parentheses";
-		errors[29] = "no more";
-		errors[30] = "invalid file";
-		errors[31] = "bad base64 encoding";
-		errors[32] = "unexpected token";
-		errors[33] = "quota reached";
-		errors[34] = "unexpected error";
-		errors[35] = "already running";
-		errors[36] = "host unknown";
-		errors[37] = "protocol version mismatch";
-		errors[38] = "protocol error";
-		errors[39] = "invalid argument";
-		errors[40] = "not connected";
-		errors[41] = "data not yet available";
-		errors[42] = "object unchanged";
-		errors[43] = "more than one object matches key";
-		errors[44] = "key conflict";
-		errors[45] = "parse error(s) occurred";
-		errors[46] = "no key specified";
-		errors[47] = "zone TSIG key not known";
-		errors[48] = "invalid TSIG key";
-		errors[49] = "operation in progress";
-		errors[50] = "DNS format error";
-		errors[51] = "DNS server failed";
-		errors[52] = "no such domain";
-		errors[53] = "not implemented";
-		errors[54] = "refused";
-		errors[55] = "domain already exists";
-		errors[56] = "RRset already exists";
-		errors[57] = "no such RRset";
-		errors[58] = "not authorized";
-		errors[59] = "not a zone";
-		errors[60] = "bad DNS signature";
-		errors[61] = "bad DNS key";
-		errors[62] = "clock skew too great";
-		errors[63] = "no root zone";
-		errors[64] = "destination address required";
-		errors[65] = "cross-zone update";
-		errors[66] = "no TSIG signature";
-		errors[67] = "not equal";
-		errors[68] = "connection reset by peer";
-		errors[69] = "unknown attribute";
-		return errors[code];
 	}
 
 	/**
@@ -443,13 +365,12 @@ public abstract class Message {
 	 * 
 	 * @return Error code from the server
 	 */
-	private String getErrorCode() {
+	private Integer getErrorCode() {
 		byte[] b = this.getMsg("result");
 		if (b != null) {
-			int x = Convert.byteArrayToInt(b);
-			return this.getErrorByCode(x);
+			return Convert.byteArrayToInt(b);
 		}
-		return "";
+		return null;
 	}
 
 	/**
