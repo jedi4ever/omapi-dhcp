@@ -4,3 +4,6 @@ This project is a fork of the OMAPI project by the developer "talamonso". The or
  
 This project is a free software and can be redistributed and/or modified under the terms of the GNU Lesser General Public License version 3. Novell provides no warranty on the sources for this library.
 
+To build a new JAR file using Maven:
+
+	mvn clean compile jar:jar
