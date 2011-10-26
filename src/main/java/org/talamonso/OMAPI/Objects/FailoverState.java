@@ -3,6 +3,7 @@ package org.talamonso.OMAPI.Objects;
 import org.talamonso.OMAPI.Connection;
 import org.talamonso.OMAPI.Message;
 import org.talamonso.OMAPI.Exceptions.OmapiConnectionException;
+import org.talamonso.OMAPI.Exceptions.OmapiException;
 import org.talamonso.OMAPI.Exceptions.OmapiInitException;
 import org.talamonso.OMAPI.Exceptions.OmapiObjectException;
 
@@ -85,7 +86,7 @@ public class FailoverState extends Message {
 	 * @param b ByteArray of the InputStream
 	 * @throws OmapiObjectException
 	 */
-	private FailoverState(Connection con, byte[] b) throws OmapiObjectException {
+	private FailoverState(Connection con, byte[] b) throws OmapiException {
 		super(con, b);
 	}
 
@@ -235,7 +236,7 @@ public class FailoverState extends Message {
 	 * @throws OmapiInitException
 	 * @throws OmapiConnectionException
 	 */
-	public FailoverState send(int option) throws OmapiObjectException, OmapiInitException, OmapiConnectionException {
+	public FailoverState send(int option) throws OmapiException {
 		return new FailoverState(this.c, super.sendMessage(option));
 	}
 

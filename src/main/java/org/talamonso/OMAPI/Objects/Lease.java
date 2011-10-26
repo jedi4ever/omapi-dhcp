@@ -3,6 +3,7 @@ package org.talamonso.OMAPI.Objects;
 import org.talamonso.OMAPI.Connection;
 import org.talamonso.OMAPI.Message;
 import org.talamonso.OMAPI.Exceptions.OmapiConnectionException;
+import org.talamonso.OMAPI.Exceptions.OmapiException;
 import org.talamonso.OMAPI.Exceptions.OmapiInitException;
 import org.talamonso.OMAPI.Exceptions.OmapiObjectException;
 
@@ -34,7 +35,7 @@ public class Lease extends Message {
 	 * @param b ByteArray of the InputStream
 	 * @throws OmapiObjectException
 	 */
-	private Lease(Connection con, byte[] b) throws OmapiObjectException {
+	private Lease(Connection con, byte[] b) throws OmapiException {
 		super(con, b);
 	}
 
@@ -45,7 +46,7 @@ public class Lease extends Message {
 	 * @throws OmapiInitException
 	 * @throws OmapiObjectException
 	 */
-	public void delete() throws OmapiObjectException, OmapiInitException, OmapiConnectionException {
+	public void delete() throws OmapiException {
 		Lease expire = this.send(Message.OPEN);
 		expire.updateState(this.FREE);
 		expire.send(Message.UPDATE);
@@ -188,7 +189,7 @@ public class Lease extends Message {
 	 * @throws OmapiObjectException
 	 * @throws OmapiInitException
 	 */
-	public Lease send(int action) throws OmapiObjectException, OmapiInitException, OmapiConnectionException {
+	public Lease send(int action) throws OmapiException {
 		return new Lease(this.c, this.sendMessage(action));
 	}
 

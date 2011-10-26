@@ -3,6 +3,7 @@ package org.talamonso.OMAPI.Objects;
 import org.talamonso.OMAPI.Connection;
 import org.talamonso.OMAPI.Message;
 import org.talamonso.OMAPI.Exceptions.OmapiConnectionException;
+import org.talamonso.OMAPI.Exceptions.OmapiException;
 import org.talamonso.OMAPI.Exceptions.OmapiInitException;
 import org.talamonso.OMAPI.Exceptions.OmapiObjectException;
 
@@ -28,9 +29,9 @@ public class Control extends Message {
 	 * 
 	 * @param c connection to OMAPI Server
 	 * @param b ByteArray of the InputStream
-	 * @throws OmapiObjectException
+	 * @throws OmapiException
 	 */
-	private Control(Connection con, byte[] b) throws OmapiObjectException {
+	private Control(Connection con, byte[] b) throws OmapiException {
 		super(con, b);
 	}
 
@@ -43,7 +44,7 @@ public class Control extends Message {
 	 * @throws OmapiInitException
 	 * @throws OmapiConnectionException
 	 */
-	public Control send(int option) throws OmapiObjectException, OmapiInitException, OmapiConnectionException {
+	public Control send(int option) throws OmapiException {
 		return new Control(this.c, super.sendMessage(option));
 	}
 
@@ -54,7 +55,7 @@ public class Control extends Message {
 	 * @throws OmapiInitException
 	 * @throws OmapiConnectionException
 	 */
-	public void shutdown() throws OmapiObjectException, OmapiInitException, OmapiConnectionException {
+	public void shutdown() throws OmapiException {
 		this.updateObjectAsInt("state", 2);
 		this.send(Message.UPDATE);
 	}

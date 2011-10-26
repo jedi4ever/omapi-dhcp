@@ -3,6 +3,7 @@ package org.talamonso.OMAPI.Objects;
 import org.talamonso.OMAPI.Connection;
 import org.talamonso.OMAPI.Message;
 import org.talamonso.OMAPI.Exceptions.OmapiConnectionException;
+import org.talamonso.OMAPI.Exceptions.OmapiException;
 import org.talamonso.OMAPI.Exceptions.OmapiInitException;
 import org.talamonso.OMAPI.Exceptions.OmapiObjectException;
 
@@ -30,7 +31,7 @@ public class Group extends Message {
 	 * @param b ByteArray of the InputStream
 	 * @throws OmapiObjectException
 	 */
-	private Group(Connection con, byte[] b) throws OmapiObjectException {
+	private Group(Connection con, byte[] b) throws OmapiException {
 		super(con, b);
 	}
 
@@ -75,7 +76,7 @@ public class Group extends Message {
 	 * @throws OmapiObjectException
 	 * @throws OmapiInitException
 	 */
-	public Group send(int option) throws OmapiObjectException, OmapiInitException, OmapiConnectionException {
+	public Group send(int option) throws OmapiException {
 		return new Group(this.c, super.sendMessage(option));
 	}
 
