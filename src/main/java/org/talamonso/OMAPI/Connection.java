@@ -31,7 +31,7 @@ public class Connection {
 
 	private String keyName = "";
 
-	private int port = 7911;
+	private int port;
 
 	private Socket socket;
 
@@ -77,7 +77,7 @@ public class Connection {
 	 * @throws OmapiConnectionException if connection fails.
 	 */
 	public Connection(String server) throws OmapiConnectionException {
-		new Connection(server, this.port);
+		this(server, 7911);
 	}
 
 	/**
